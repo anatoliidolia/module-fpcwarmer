@@ -28,7 +28,11 @@ class GenerateQueue extends Command
     }
 
     /**
-     * @inheritdoc
+     * Generate queue for warmer
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
      */
     protected function execute(
         InputInterface $input,
@@ -45,7 +49,9 @@ class GenerateQueue extends Command
     }
 
     /**
-     * @inheritdoc
+     * CLI Details
+     *
+     * @return void
      */
     protected function configure(): void
     {

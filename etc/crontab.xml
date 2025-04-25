@@ -1,8 +1,11 @@
 <?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
 	<group id="default">
-		<job name="peachcode_fpcwarmer_cronjob" instance="PeachCode\FPCWarmer\Cron\CronJob" method="execute">
+		<job name="peachcode_fpcwarmer_cronjob" instance="PeachCode\FPCWarmer\Cron\CronJob" method="generateQueue">
 			<schedule>0 2 * * *</schedule>
+		</job>
+        <job name="peachcode_fpcwarmer_cronjob" instance="PeachCode\FPCWarmer\Cron\CronJob" method="processQueue">
+			<schedule>0 3 * * *</schedule>
 		</job>
 	</group>
 </config>

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace PeachCode\FPCWarmer\Cron;
 
-use Psr\Log\LoggerInterface;
+use PeachCode\FPCWarmer\Logger\Logger;
 
 class CronJob
 {
@@ -11,11 +11,20 @@ class CronJob
     /**
      * Constructor
      *
-     * @param LoggerInterface $logger
+     * @param Logger $handler
      */
-    public function __construct(private LoggerInterface $logger)
-    {
+    public function __construct(
+        private readonly Logger $handler,
+    ){}
 
+    /**
+     * Execute the cron
+     *
+     * @return void
+     */
+    public function generateQueue(): void
+    {
+        $this->handler->info("Cronjob CronJob is executed.");
     }
 
     /**
@@ -23,9 +32,9 @@ class CronJob
      *
      * @return void
      */
-    public function execute(): void
+    public function processQueue(): void
     {
-        $this->logger->info("Cronjob CronJob is executed.");
+        $this->handler->info("Cronjob CronJob is executed.");
     }
 }
 

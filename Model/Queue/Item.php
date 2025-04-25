@@ -8,6 +8,10 @@ use PeachCode\FPCWarmer\Model\ResourceModel\Queue as ResourceModel;
 
 class Item extends AbstractModel
 {
+
+    /**
+     * @return void
+     */
     protected function _construct(): void
     {
         $this->_init(ResourceModel::class);
