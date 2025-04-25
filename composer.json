@@ -1,0 +1,26 @@
+{
+    "name": "peachcode/module-fpcwarmer",
+    "description": "Full Page Cache Warmer",
+    "keywords": ["magento2 extension", "magento 2 extension", "extension", "module", "magento2 module", "magento 2 module"],
+    "require": {
+        "php": "~8.1.0||~8.2.0",
+        "ext-libxml": "*",
+        "ext-simplexml": "*"
+    },
+    "authors": [
+        {
+            "name": "Anatolii Dolia",
+            "email": "doliaanatolii@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "PeachCode\\FPCWarmer\\": ""
+        }
+    }
+}
