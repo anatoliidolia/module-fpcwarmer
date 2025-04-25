@@ -5,9 +5,6 @@ namespace PeachCode\FPCWarmer\Block\Adminhtml\Menu\Field;
 
 use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
 
-/**
- * Class Ranges
- */
 class SitemapMatrix extends AbstractFieldArray
 {
 
