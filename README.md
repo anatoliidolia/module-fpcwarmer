@@ -84,7 +84,7 @@ To enable or disable the module, you can use the following commands:
 
 ## Support
 
-For any issues or support, please contact the module developers at [support@peachcode.com](mailto:doliaanatolii@gmail.com).
+For any issues or support, please contact the module developers at [doliaanatolii@gmail.com](mailto:doliaanatolii@gmail.com).
 
 
 **Magento 2.4.6**
