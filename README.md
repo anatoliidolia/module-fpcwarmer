@@ -15,7 +15,13 @@ The PeachCode FPCWarmer module is designed for Magento 2 to generate a queue of 
 
 ## Installation
 
-1. **Install the module** by placing the files in the `app/code/PeachCode/FPCWarmer/` directory.
+### Step 1: Install the module via Composer
+
+1. Add the module to your project using Composer:
+   ```bash
+    composer require peachcode/module-fpcwarmer:dev-main
+   ```
+
 2. **Run the setup upgrade** command to enable the module:
    ```bash
    bin/magento setup:upgrade
@@ -86,6 +92,9 @@ To enable or disable the module, you can use the following commands:
 
 For any issues or support, please contact the module developers at [doliaanatolii@gmail.com](mailto:doliaanatolii@gmail.com).
 
+## License
+
+This module is licensed under the [MIT License](LICENSE).
 
 **Magento 2.4.6**
 
