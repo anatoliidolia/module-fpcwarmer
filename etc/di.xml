@@ -28,7 +28,10 @@
 	</type>
 
     <!--  Interface Declaration  -->
-    <preference for="PeachCode\FPCWarmer\Api\Warmer\GenerateQueueInterface"
+    <preference for="PeachCode\FPCWarmer\Api\Warmer\Queue\GenerateQueueInterface"
                 type="PeachCode\FPCWarmer\Model\Queue\QueueGenerator"/>
+
+    <preference for="PeachCode\FPCWarmer\Api\Warmer\Processing\WarmPageCache"
+                type="PeachCode\FPCWarmer\Model\PageCache\CacheGenerator"/>
 
 </config>
