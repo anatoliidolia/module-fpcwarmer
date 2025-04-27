@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace PeachCode\FPCWarmer\Model\Queue;
 
-use PeachCode\FPCWarmer\Api\Warmer\GenerateQueueInterface;
+use Exception;
+use Magento\Framework\HTTP\Client\Curl;
+use PeachCode\FPCWarmer\Api\Warmer\Queue\GenerateQueueInterface;
 use PeachCode\FPCWarmer\Logger\Logger;
 use PeachCode\FPCWarmer\Model\Config\Data;
-use Magento\Framework\HTTP\Client\Curl;
 use Symfony\Component\Console\Command\Command;
-use Exception;
 
 class QueueGenerator  implements GenerateQueueInterface {
 
@@ -112,8 +112,6 @@ class QueueGenerator  implements GenerateQueueInterface {
 
         } catch (Exception $e) {
             $this->handler->error("Failed to fetch sitemap: " . $e->getMessage());
-            $this->handler->error("Failed to fetch sitemap: " . $e->getLine());
-            $this->handler->error("Failed to fetch sitemap: " . $e->getCode());
         }
     }
 }

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace PeachCode\FPCWarmer\Console\Command;
 
-use PeachCode\FPCWarmer\Api\Warmer\GenerateQueueInterface;
+use PeachCode\FPCWarmer\Api\Warmer\Queue\GenerateQueueInterface;
 use PeachCode\FPCWarmer\Logger\Logger;
 use PeachCode\FPCWarmer\Model\Config\Data;
 use Symfony\Component\Console\Command\Command;
