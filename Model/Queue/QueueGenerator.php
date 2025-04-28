@@ -93,12 +93,21 @@ class QueueGenerator  implements GenerateQueueInterface {
     private function prepareValue($sitemapUrl): void
     {
         try {
+
+            if($this->config->isDeveloperMode()){
+                $sitemapUrl = $this->prepareDeveloperValue($sitemapUrl);
+            }
+
             $this->curl->get($sitemapUrl);
             $xmlContent = $this->curl->getBody();
 
             $urlsFromSitemap = $this->extractUrlsFromSitemap($xmlContent);
 
             foreach ($urlsFromSitemap as $url) {
+
+                if($this->config->isDeveloperMode()){
+                    $url = $this->prepareDeveloperValue($url);
+                }
 
                 $cartItem = $this->itemFactory->create();
                 $cartItem->setData([
@@ -113,5 +122,38 @@ class QueueGenerator  implements GenerateQueueInterface {
         } catch (Exception $e) {
             $this->handler->error("Failed to fetch sitemap: " . $e->getMessage());
         }
+    }
+
+    /**
+     * Add Basic Auth to url
+     *
+     * @param string $url
+     * @return string
+     */
+    private function prepareDeveloperValue(string $url): string
+    {
+        $login = $this->config->getDeveloperLogin();
+        $password = $this->config->getDeveloperPassword();
+
+        if (!$login || !$password) {
+            return $url;
+        }
+
+        $parsedUrl = parse_url($url);
+
+        if (!isset($parsedUrl['host'])) {
+            return $url;
+        }
+
+        $auth = urlencode($login) . ':' . urlencode($password);
+
+        $scheme = $parsedUrl['scheme'] ?? 'https';
+        $host = $parsedUrl['host'];
+        $port = isset($parsedUrl['port']) ? ':' . $parsedUrl['port'] : '';
+        $path = $parsedUrl['path'] ?? '';
+        $query = isset($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
+        $fragment = isset($parsedUrl['fragment']) ? '#' . $parsedUrl['fragment'] : '';
+
+        return $scheme . '://' . $auth . '@' . $host . $port . $path . $query . $fragment;
     }
 }
