@@ -21,6 +21,7 @@
             </group>
             <group id="sitemap_array" translate="label" type="text" sortOrder="20" showInDefault="1"
                    showInWebsite="0" showInStore="0">
+                <label>Sitemap Urls</label>
                 <field id="sitemap" translate="label" type="select" sortOrder="1" showInDefault="1">
                     <label>Add Sitemap Url</label>
                     <frontend_model>PeachCode\FPCWarmer\Block\Adminhtml\Menu\Field\SitemapMatrix</frontend_model>
@@ -28,6 +29,34 @@
                     <comment>Please add site map url. Example: https://www.site.com/pub/media/sitemap.xml</comment>
                     <depends>
                         <field id="module_fpcwarmer/module_status/status">1</field>
+                    </depends>
+                </field>
+            </group>
+            <group id="developer" translate="label" type="text" sortOrder="20" showInDefault="1"
+                   showInWebsite="0" showInStore="0">
+                <label>Developer Mode</label>
+                <field id="basic_auth" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="0">
+                    <label>Basic Auth</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <depends>
+                        <field id="module_fpcwarmer/module_status/status">1</field>
+                        <field id="developer_mode">1</field>
+                    </depends>
+                </field>
+                <field id="basic_auth_login" translate="label" type="text" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="0">
+                    <label>Basic Auth Login</label>
+                    <depends>
+
+                        <field id="module_fpcwarmer/developer/basic_auth">1</field>
+                    </depends>
+                </field>
+                <field id="basic_auth_password" translate="label" type="text" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="0">
+                    <label>Basic Auth Password</label>
+                    <depends>
+                        <field id="module_fpcwarmer/developer/basic_auth">1</field>
                     </depends>
                 </field>
             </group>

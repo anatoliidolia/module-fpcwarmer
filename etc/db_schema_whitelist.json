@@ -1,0 +1,17 @@
+{
+    "fpc_queue": {
+        "column": {
+            "entity_id": true,
+            "created_at": true,
+            "updated_at": true,
+            "url": true,
+            "status": true
+        },
+        "index": {
+            "FPC_QUEUE_ENTITY_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}
