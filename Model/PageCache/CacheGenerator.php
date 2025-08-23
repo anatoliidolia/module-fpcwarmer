@@ -6,25 +6,26 @@ namespace PeachCode\FPCWarmer\Model\PageCache;
 use Exception;
 use Generator;
 use GuzzleHttp\Client;
-use GuzzleHttp\Promise\Utils;
-use PeachCode\FPCWarmer\Logger\Logger;
 use PeachCode\FPCWarmer\Model\Queue\Item;
 use PeachCode\FPCWarmer\Api\Warmer\Processing\WarmPageCache;
 use PeachCode\FPCWarmer\Model\ResourceModel\Queue\Item\CollectionFactory as ItemCollectionFactory;
+use GuzzleHttp\Pool;
+use Psr\Log\LoggerInterface;
 
 class CacheGenerator implements WarmPageCache
 {
     private const PAGE_SIZE = 20;
+    private const CONCURRENCY = 5;
 
     /**
      * @param ItemCollectionFactory $itemCollectionFactory
      * @param Client $client
-     * @param Logger $handler
+     * @param LoggerInterface $logger
      */
     public function __construct(
         private readonly ItemCollectionFactory $itemCollectionFactory,
-        private readonly Client                $client,
-        private readonly Logger                $handler
+        private readonly Client $client,
+        private readonly LoggerInterface $logger
     ) {}
 
     /**
@@ -32,33 +33,53 @@ class CacheGenerator implements WarmPageCache
      */
     public function cacheGenerator(): int
     {
-        $this->handler->notice("Starting cache warming with optimized generator...");
+        $this->logger->notice("Starting cache warming with optimized generator using Pool...");
 
         $totalProcessed = 0;
 
         foreach ($this->generateQueueItems() as $chunk) {
-            $promises = [];
+            $promises = function () use ($chunk) {
+                foreach ($chunk as $item) {
+                    $url = $item->getData('url');
+                    yield function () use ($url, $item) {
+                        return $this->client->requestAsync('GET', $url, [
+                            'headers' => [
+                                'Cache-Control' => 'public, max-age=3600',
+                                'Pragma' => 'cache',
+                                'Vary' => 'Accept-Encoding',
+                            ]
+                        ])->then(
+                            function ($response) use ($item) {
+                                $headers = $response->getHeaders();
+                                $cacheDebugHeader = $headers['X-Magento-Cache-Debug'][0] ?? 'UNKNOWN';
+                                $this->logger->info('Warmed and marked URL: ' . $item->getData('url') . ' - Cache Status: ' . $cacheDebugHeader);
+                                $this->markAsProcessed($item);
+                            },
+                            function ($reason) use ($item, $url) {
+                                $this->logger->error('Failed to warm URL: ' . $url . '. Reason: ' . $reason);
+                            }
+                        );
+                    };
+                }
+            };
 
-            foreach ($chunk as $item) {
-                $url = $item->getData('url');
+            $pool = new Pool(
+                $this->client,
+                $promises(),
+                [
+                    'concurrency' => self::CONCURRENCY,
+                    'fulfilled' => function ($response, $index) {
+                    },
+                    'rejected' => function ($reason, $index) {
+                    },
+                ]
+            );
 
-                $promises[] = $this->client->getAsync($url)
-                    ->then(
-                        function () use ($item) {
-                            $this->markAsProcessed($item);
-                        },
-                        function ($reason) use ($item, $url) {
-                            $this->handler->error('Failed to warm URL: ' . $url . '. Reason: ' . $reason);
-                        }
-                    );
-            }
-
-            Utils::settle($promises)->wait();
-
-            $totalProcessed += count($promises);
+            $pool->promise()->wait();
+            $totalProcessed += count($chunk);
         }
 
-        $this->handler->notice("Finished cache warming. Total processed: $totalProcessed");
+        $this->logger->notice("Finished cache warming. Total processed: $totalProcessed");
 
         return $totalProcessed;
     }
@@ -100,6 +121,6 @@ class CacheGenerator implements WarmPageCache
     {
         $item->setData('status', '1');
         $item->save();
-        $this->handler->info('Warmed and marked URL: ' . $item->getData('url'));
+        $this->logger->info('Warmed and marked URL: ' . $item->getData('url'));
     }
 }
